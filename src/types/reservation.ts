@@ -1,15 +1,6 @@
-export type ResourceType = "ROOM" | "EQUIPMENT" | "LAB";
-
 export type ReservationStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
 
-export interface Resource {
-  id: string;
-  name: string;
-  type: ResourceType;
-  location: string;
-  isAvailable: boolean;
-}
-
+// this is what the request body looks like when someone POSTs a new reservation
 export interface ReservationInput {
   resourceId: string;
   userId: string;
@@ -17,16 +8,12 @@ export interface ReservationInput {
   endTime: string;
 }
 
-export interface Reservation {
+// this is what we send back to the client for a reservation
+export interface ReservationDTO {
   id: string;
   resourceId: string;
   userId: string;
   startTime: string;
   endTime: string;
   status: ReservationStatus;
-}
-
-export interface ErrorResponse {
-  code: string;
-  message: string;
 }
