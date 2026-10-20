@@ -46,7 +46,7 @@ paths:
   /reservations:
     post:
       summary: Create a new reservation
-      description: Creates a time-slotted reservation for a resource. Fails with 409 if the resource is already booked for the requested time block.
+      description: Creates a time-slotted reservation for a resource. Fails with 409 if the resource already has a PENDING or CONFIRMED reservation overlapping the requested time block; CANCELLED reservations do not block.
       operationId: createReservation
       requestBody:
         required: true
@@ -69,6 +69,32 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "409":
           description: Resource is already reserved for the requested time block.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /reservations/{id}/cancel:
+    patch:
+      summary: Cancel a reservation
+      description: Sets the reservation's status to CANCELLED, which frees its time block for new bookings. Idempotent — cancelling an already-cancelled reservation returns it unchanged with 200.
+      operationId: cancelReservation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the reservation to cancel.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The cancelled reservation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reservation"
+        "404":
+          description: No reservation exists with the given ID.
           content:
             application/json:
               schema:

@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import {
   createReservation,
+  cancelReservation,
   getActiveReservationsForUser,
   ValidationError,
   ConflictError,
+  NotFoundError,
 } from "../services/reservation.service";
 import { ReservationDTO } from "../types/reservation";
 import { ErrorResponse } from "../types/common";
@@ -25,6 +27,28 @@ export function postReservation(
       }
       if (error instanceof ValidationError) {
         res.status(400).json({ code: error.code, message: error.message });
+        return;
+      }
+      next(error);
+    });
+}
+
+// PATCH /api/v1/reservations/:id/cancel
+export function patchCancelReservation(
+  req: Request,
+  res: Response<ReservationDTO | ErrorResponse>,
+  next: NextFunction
+): void {
+  const rawId = req.params.id;
+  const id = Array.isArray(rawId) ? rawId[0] : rawId;
+
+  cancelReservation(id)
+    .then((reservation) => {
+      res.status(200).json(reservation);
+    })
+    .catch((error) => {
+      if (error instanceof NotFoundError) {
+        res.status(404).json({ code: error.code, message: error.message });
         return;
       }
       next(error);
