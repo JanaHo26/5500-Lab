@@ -65,6 +65,12 @@ export async function createReservation(
     throw new ValidationError("startTime must be before endTime.");
   }
 
+  // reject a malformed id up front, otherwise the lookup below throws a
+  // CastError that would surface as a 500 instead of bad client input
+  if (!Types.ObjectId.isValid(resourceId)) {
+    throw new ValidationError("resourceId must be a valid resource id.");
+  }
+
   const resourceExists = await Resource.findById(resourceId);
   if (!resourceExists) {
     throw new ValidationError("No resource found with id " + resourceId);
