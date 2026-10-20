@@ -10,8 +10,9 @@ export function getResources(
   next: NextFunction
 ): void {
   const type = req.query.type as string | undefined;
+  const isAvailable = req.query.isAvailable as string | undefined;
 
-  listResources(type)
+  listResources(type, isAvailable)
     .then((result) => {
       res.status(200).json(result);
     })

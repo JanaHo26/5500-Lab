@@ -11,7 +11,7 @@ paths:
   /resources:
     get:
       summary: List all resources
-      description: Returns all campus resources, optionally filtered by type.
+      description: Returns all campus resources, optionally filtered by type and/or availability. Filters may be combined.
       operationId: listResources
       parameters:
         - name: type
@@ -21,6 +21,12 @@ paths:
           schema:
             type: string
             enum: [ROOM, EQUIPMENT, LAB]
+        - name: isAvailable
+          in: query
+          required: false
+          description: Filter resources by availability. Must be exactly "true" or "false" when provided.
+          schema:
+            type: boolean
       responses:
         "200":
           description: A list of resources.

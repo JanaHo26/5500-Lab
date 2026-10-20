@@ -19,21 +19,37 @@ function toDTO(doc: HydratedDocument<IResource>): ResourceDTO {
   };
 }
 
-export async function listResources(type?: string): Promise<ResourceDTO[]> {
-  if (type === undefined) {
-    const allResources = await Resource.find();
-    return allResources.map(toDTO);
+// query params always arrive as strings, so only the exact strings are accepted
+function parseIsAvailable(value: string): boolean {
+  if (value === "true") return true;
+  if (value === "false") return false;
+  throw new ValidationError('isAvailable must be either "true" or "false".');
+}
+
+export async function listResources(
+  type?: string,
+  isAvailable?: string
+): Promise<ResourceDTO[]> {
+  const filter: QueryFilter<IResource> = {};
+
+  if (type !== undefined) {
+    if (type.trim() === "") {
+      throw new ValidationError(
+        "type must be a non-empty string when provided."
+      );
+    }
+
+    if (!validTypes.includes(type as ResourceType)) {
+      throw new ValidationError("type must be one of: ROOM, EQUIPMENT, LAB.");
+    }
+
+    filter.type = type as ResourceType;
   }
 
-  if (type.trim() === "") {
-    throw new ValidationError("type must be a non-empty string when provided.");
+  if (isAvailable !== undefined) {
+    filter.isAvailable = parseIsAvailable(isAvailable);
   }
 
-  if (!validTypes.includes(type as ResourceType)) {
-    throw new ValidationError("type must be one of: ROOM, EQUIPMENT, LAB.");
-  }
-
-  const filter: QueryFilter<IResource> = { type: type as ResourceType };
-  const filtered = await Resource.find(filter);
-  return filtered.map(toDTO);
+  const resources = await Resource.find(filter);
+  return resources.map(toDTO);
 }
