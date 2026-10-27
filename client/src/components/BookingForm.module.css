@@ -1,0 +1,51 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #dde0e6;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.selected {
+  margin: 0;
+  font-weight: 600;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+.field input {
+  padding: 6px 8px;
+  border: 1px solid #c8ccd4;
+  border-radius: 6px;
+}
+
+.submit {
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: #2f5fd0;
+  color: #fff;
+  cursor: pointer;
+}
+
+.submit:disabled {
+  background: #b8bec9;
+  cursor: not-allowed;
+}
+
+.error {
+  margin: 0;
+  color: #b3261e;
+}
+
+.success {
+  margin: 0;
+  color: #1a7f45;
+}

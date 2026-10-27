@@ -1,0 +1,85 @@
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.filter,
+.filterActive {
+  padding: 6px 14px;
+  border: 1px solid #c8ccd4;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.filterActive {
+  background: #2f5fd0;
+  border-color: #2f5fd0;
+  color: #fff;
+}
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card,
+.cardSelected {
+  padding: 16px;
+  border: 1px solid #dde0e6;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.cardSelected {
+  border-color: #2f5fd0;
+  box-shadow: 0 0 0 2px rgba(47, 95, 208, 0.25);
+}
+
+.card h3,
+.cardSelected h3 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.meta {
+  margin: 2px 0;
+  color: #5b6270;
+  font-size: 0.9rem;
+}
+
+.available {
+  margin: 8px 0;
+  color: #1a7f45;
+  font-weight: 600;
+}
+
+.unavailable {
+  margin: 8px 0;
+  color: #b3261e;
+  font-weight: 600;
+}
+
+.book {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: #2f5fd0;
+  color: #fff;
+  cursor: pointer;
+}
+
+.book:disabled {
+  background: #b8bec9;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #b3261e;
+}
