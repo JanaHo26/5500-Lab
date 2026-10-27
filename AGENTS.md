@@ -33,6 +33,18 @@ Basically: routes just route, controllers just handle, services do the actual wo
 - Keep functions small and focused on one thing.
 - Follow eslint/prettier formatting, don't format code your own way.
 
+## Frontend (client/)
+
+React + TypeScript + Vite project in `client/`. Only `.ts`/`.tsx` files in `client/src/`.
+
+- Functional components only, and every component has an explicit props interface.
+- Use `useState`/`useEffect` or custom hooks. No API calls directly inside JSX.
+- Keep styling consistent: use CSS modules or plain CSS.
+- Allowed packages: `react`, `vite`, `axios` (plus the TypeScript/React tooling already in `client/package.json`). Don't add any other package without asking me first.
+- API calls live in `client/src/api/`, and their types must match `docs/openapi.yaml`.
+- The frontend reaches the backend through the Vite proxy for `/api`. Don't add CORS to the backend.
+- Follow the client's configured linter/formatter, don't format code your own way.
+
 ## Git & Commit Formatting
 
 - One commit = one logical change, don't bundle unrelated stuff together.
