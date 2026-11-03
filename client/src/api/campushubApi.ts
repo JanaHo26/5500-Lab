@@ -1,38 +1,21 @@
 import axios, { type AxiosInstance } from 'axios'
 
-export type ResourceType = 'ROOM' | 'EQUIPMENT' | 'LAB'
+// Single source of truth for these types lives in the backend's src/types/.
+import type { ErrorResponse } from '../../../src/types/common'
+import type {
+  Reservation,
+  ReservationInput,
+  ReservationStatus,
+} from '../../../src/types/reservation'
+import type { Resource, ResourceType } from '../../../src/types/resource'
 
-export type ReservationStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED'
-
-export interface Resource {
-  id: string
-  name: string
-  type: ResourceType
-  location: string
-  isAvailable: boolean
-}
-
-export interface CreateReservationDTO {
-  resourceId: string
-  userId: string
-  /** ISO 8601 date-time string. */
-  startTime: string
-  /** ISO 8601 date-time string. */
-  endTime: string
-}
-
-export interface Reservation {
-  id: string
-  resourceId: string
-  userId: string
-  startTime: string
-  endTime: string
-  status: ReservationStatus
-}
-
-export interface ErrorResponse {
-  code: string
-  message: string
+export type {
+  ErrorResponse,
+  Reservation,
+  ReservationInput,
+  ReservationStatus,
+  Resource,
+  ResourceType,
 }
 
 // Relative base URL: in dev the Vite proxy forwards /api to localhost:3000.
@@ -54,7 +37,7 @@ export async function fetchResources(type?: ResourceType): Promise<Resource[]> {
 }
 
 export async function createReservation(
-  payload: CreateReservationDTO,
+  payload: ReservationInput,
 ): Promise<Reservation> {
   const response = await api.post<Reservation>('/reservations', payload)
   return response.data

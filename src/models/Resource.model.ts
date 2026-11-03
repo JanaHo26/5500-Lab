@@ -1,6 +1,5 @@
 import { Schema, model, Document } from "mongoose";
-
-export type ResourceType = "ROOM" | "EQUIPMENT" | "LAB";
+import { ResourceType } from "../types/resource";
 
 export interface IResource extends Document {
   name: string;

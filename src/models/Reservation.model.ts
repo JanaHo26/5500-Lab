@@ -1,6 +1,5 @@
 import { Schema, model, Document, Types } from "mongoose";
-
-export type ReservationStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
+import { ReservationStatus } from "../types/reservation";
 
 export interface IReservation extends Document {
   resourceId: Types.ObjectId;

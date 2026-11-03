@@ -1,6 +1,6 @@
 import { QueryFilter, HydratedDocument } from "mongoose";
-import { Resource, IResource, ResourceType } from "../models/Resource.model";
-import { ResourceDTO } from "../types/resource";
+import { Resource, IResource } from "../models/Resource.model";
+import { Resource as ResourceDTO, ResourceType } from "../types/resource";
 import { ValidationError } from "../errors/AppError";
 
 const validTypes: ResourceType[] = ["ROOM", "EQUIPMENT", "LAB"];

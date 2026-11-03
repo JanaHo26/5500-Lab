@@ -1,7 +1,11 @@
 import { Types } from "mongoose";
-import { Reservation, ReservationStatus } from "../models/Reservation.model";
+import { Reservation } from "../models/Reservation.model";
 import { Resource } from "../models/Resource.model";
-import { ReservationInput, ReservationDTO } from "../types/reservation";
+import {
+  ReservationInput,
+  Reservation as ReservationDTO,
+  ReservationStatus,
+} from "../types/reservation";
 import {
   ValidationError,
   ConflictError,

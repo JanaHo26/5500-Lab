@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { listResources } from "../services/resource.service";
-import { ResourceDTO } from "../types/resource";
+import { Resource as ResourceDTO } from "../types/resource";
 import { ErrorResponse } from "../types/common";
 
 // GET /api/v1/resources

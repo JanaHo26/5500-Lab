@@ -4,7 +4,7 @@ import {
   cancelReservation,
   getActiveReservationsForUser,
 } from "../services/reservation.service";
-import { ReservationDTO } from "../types/reservation";
+import { Reservation as ReservationDTO } from "../types/reservation";
 import { ErrorResponse } from "../types/common";
 
 // POST /api/v1/reservations

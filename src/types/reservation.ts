@@ -4,12 +4,14 @@ export type ReservationStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
 export interface ReservationInput {
   resourceId: string;
   userId: string;
+  /** ISO 8601 date-time string. */
   startTime: string;
+  /** ISO 8601 date-time string. */
   endTime: string;
 }
 
 // this is what we send back to the client for a reservation
-export interface ReservationDTO {
+export interface Reservation {
   id: string;
   resourceId: string;
   userId: string;
