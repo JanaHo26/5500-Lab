@@ -1,12 +1,9 @@
 import { QueryFilter, HydratedDocument } from "mongoose";
 import { Resource, IResource, ResourceType } from "../models/Resource.model";
 import { ResourceDTO } from "../types/resource";
+import { ValidationError } from "../errors/AppError";
 
 const validTypes: ResourceType[] = ["ROOM", "EQUIPMENT", "LAB"];
-
-export class ValidationError extends Error {
-  code = "VALIDATION_ERROR";
-}
 
 // turns a mongoose document into the plain shape we send back to the client
 function toDTO(doc: HydratedDocument<IResource>): ResourceDTO {

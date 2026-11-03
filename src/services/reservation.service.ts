@@ -2,18 +2,11 @@ import { Types } from "mongoose";
 import { Reservation, ReservationStatus } from "../models/Reservation.model";
 import { Resource } from "../models/Resource.model";
 import { ReservationInput, ReservationDTO } from "../types/reservation";
-
-export class ValidationError extends Error {
-  code = "VALIDATION_ERROR";
-}
-
-export class ConflictError extends Error {
-  code = "DOUBLE_BOOKING";
-}
-
-export class NotFoundError extends Error {
-  code = "NOT_FOUND";
-}
+import {
+  ValidationError,
+  ConflictError,
+  NotFoundError,
+} from "../errors/AppError";
 
 // only these statuses hold a time slot; a CANCELLED one frees it up again
 const blockingStatuses: ReservationStatus[] = ["PENDING", "CONFIRMED"];
