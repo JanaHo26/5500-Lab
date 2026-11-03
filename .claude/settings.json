@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./node_modules/**)",
+      "Read(./client/node_modules/**)",
+      "Read(./dist/**)",
+      "Read(./client/dist/**)",
+      "Read(./build/**)",
+      "Read(./coverage/**)",
+      "Read(./package-lock.json)",
+      "Read(./client/package-lock.json)",
+      "Read(**/*.log)",
+      "Read(**/*.map)",
+      "Read(./docs/lab4-steering-log.md)",
+      "Read(./.env)"
+    ]
+  }
+}

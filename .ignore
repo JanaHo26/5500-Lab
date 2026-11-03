@@ -1,0 +1,11 @@
+node_modules/
+client/node_modules/
+dist/
+client/dist/
+build/
+coverage/
+package-lock.json
+client/package-lock.json
+*.log
+*.map
+docs/lab4-steering-log.md
