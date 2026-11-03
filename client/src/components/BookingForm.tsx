@@ -1,9 +1,6 @@
 import { useState, type FormEvent, type ReactElement } from 'react'
-import {
-  createReservation,
-  getApiErrorMessage,
-  type Resource,
-} from '../api/campushubApi'
+import type { Resource } from '../api/campushubApi'
+import { useCreateReservation } from '../hooks/useReservations'
 import styles from './BookingForm.module.css'
 
 export interface BookingFormProps {
@@ -12,49 +9,18 @@ export interface BookingFormProps {
   onBooked: () => void
 }
 
-function validate(resource: Resource | null, start: string, end: string): string | null {
-  if (!resource) return 'Select a resource first.'
-  if (!start || !end) return 'Enter both a start time and an end time.'
-  if (new Date(end).getTime() <= new Date(start).getTime()) {
-    return 'End time must be after start time.'
-  }
-  return null
-}
-
 function BookingForm({ resource, userId, onBooked }: BookingFormProps): ReactElement {
   const [startTime, setStartTime] = useState<string>('')
   const [endTime, setEndTime] = useState<string>('')
-  const [submitting, setSubmitting] = useState<boolean>(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
+  const { submitting, error, success, submit } = useCreateReservation(userId)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
-    setSuccess(null)
-
-    const validationError = validate(resource, startTime, endTime)
-    if (validationError || !resource) {
-      setError(validationError)
-      return
-    }
-
-    setError(null)
-    setSubmitting(true)
-    try {
-      await createReservation({
-        resourceId: resource.id,
-        userId,
-        startTime: new Date(startTime).toISOString(),
-        endTime: new Date(endTime).toISOString(),
-      })
-      setSuccess(`Booked ${resource.name}.`)
+    const booked = await submit(resource, startTime, endTime)
+    if (booked) {
       setStartTime('')
       setEndTime('')
       onBooked()
-    } catch (err: unknown) {
-      setError(getApiErrorMessage(err))
-    } finally {
-      setSubmitting(false)
     }
   }
 

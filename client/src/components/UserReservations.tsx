@@ -1,12 +1,5 @@
-import { useEffect, useState, type ReactElement } from 'react'
-import {
-  cancelReservation,
-  fetchResources,
-  fetchUserReservations,
-  getApiErrorMessage,
-  type Reservation,
-  type Resource,
-} from '../api/campushubApi'
+import type { ReactElement } from 'react'
+import { useReservations } from '../hooks/useReservations'
 import styles from './UserReservations.module.css'
 
 export interface UserReservationsProps {
@@ -20,56 +13,8 @@ function formatTime(iso: string): string {
 }
 
 function UserReservations({ userId, refreshKey }: UserReservationsProps): ReactElement {
-  const [reservations, setReservations] = useState<Reservation[]>([])
-  const [resourceNames, setResourceNames] = useState<Record<string, string>>({})
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
-  const [cancellingId, setCancellingId] = useState<string | null>(null)
-  const [reloadCount, setReloadCount] = useState<number>(0)
-
-  useEffect(() => {
-    let ignore = false
-
-    async function load(): Promise<void> {
-      setLoading(true)
-      try {
-        // Unfiltered resource list, so names resolve whatever filter ResourceList has.
-        // If it fails we still show reservations, falling back to the id.
-        const [data, resources] = await Promise.all([
-          fetchUserReservations(userId),
-          fetchResources().catch((): Resource[] => []),
-        ])
-        if (!ignore) {
-          setReservations(data)
-          setResourceNames(
-            Object.fromEntries(resources.map((r) => [r.id, r.name])),
-          )
-          setError(null)
-        }
-      } catch (err: unknown) {
-        if (!ignore) setError(getApiErrorMessage(err))
-      } finally {
-        if (!ignore) setLoading(false)
-      }
-    }
-
-    void load()
-    return (): void => {
-      ignore = true
-    }
-  }, [userId, refreshKey, reloadCount])
-
-  async function handleCancel(reservationId: string): Promise<void> {
-    setCancellingId(reservationId)
-    try {
-      await cancelReservation(reservationId)
-      setReloadCount((count) => count + 1)
-    } catch (err: unknown) {
-      setError(getApiErrorMessage(err))
-    } finally {
-      setCancellingId(null)
-    }
-  }
+  const { reservations, resourceNames, loading, error, cancellingId, cancel } =
+    useReservations(userId, refreshKey)
 
   return (
     <section>
@@ -95,7 +40,7 @@ function UserReservations({ userId, refreshKey }: UserReservationsProps): ReactE
               type="button"
               className={styles.cancel}
               disabled={cancellingId === reservation.id}
-              onClick={(): void => void handleCancel(reservation.id)}
+              onClick={(): void => void cancel(reservation.id)}
             >
               {cancellingId === reservation.id ? 'Cancelling...' : 'Cancel'}
             </button>
