@@ -5,7 +5,7 @@ If a request conflicts with these rules, ask me first instead of ignoring them.
 ## Tech Stack
 
 - TypeScript only, no `.js` files in `src/`. Backend: Node.js + Express + MongoDB via Mongoose.
-- Allowed packages: `typescript`, `ts-node`, `@types/node`, `express`, `@types/express`, `mongoose`, `dotenv`, `eslint`, `prettier`. Ask before adding any other.
+- Allowed packages: `typescript`, `ts-node`, `@types/node`, `express`, `@types/express`, `mongoose`, `dotenv`, `eslint`, `prettier`, and for tests only (devDependencies) `jest`, `ts-jest`, `@types/jest`, `supertest`, `@types/supertest`, `mongodb-memory-server`. Ask before adding any other.
 
 ## Architecture
 
@@ -25,6 +25,15 @@ If a request conflicts with these rules, ask me first instead of ignoring them.
 - No unhandled promises. Let errors propagate (Express 5 forwards rejected async handlers to the error handler).
 - Keep functions small and single-purpose.
 - Follow eslint/prettier formatting.
+
+## Testing
+
+- Jest + ts-jest. Run `npm test`; `npm run test:coverage` must stay at 80%+ statements and branches for `src/services/` and `src/controllers/`.
+- Tests live next to the code: `src/services/__tests__/`, `src/routes/__tests__/` (Supertest against `app`), `src/controllers/__tests__/`.
+- `src/test/setup.ts` gives every test file its own `mongodb-memory-server` and clears it between tests. Never point tests at the real `MONGODB_URI`.
+- `src/app.ts` only listens and connects when run directly, so tests import `app` without side effects. Keep it that way.
+- Don't write only happy-path tests. Every new service function also needs tests for missing/invalid input, exact boundaries (to the millisecond for times), not-found ids, and concurrent calls where data can conflict.
+- A failing test that exposes a real bug means fixing the code, not loosening the test.
 
 ## Frontend (client/)
 

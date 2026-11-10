@@ -35,9 +35,13 @@ async function startServer(): Promise<void> {
   });
 }
 
-startServer().catch((error) => {
-  console.error("Failed to start server:", error);
-  process.exit(1);
-});
+// only start listening when run directly (npm run dev / start), so tests can
+// import the app without opening a port or connecting to the real database
+if (require.main === module) {
+  startServer().catch((error) => {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  });
+}
 
 export default app;

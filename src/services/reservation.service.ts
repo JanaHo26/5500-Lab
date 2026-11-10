@@ -15,6 +15,8 @@ import {
 // only these statuses hold a time slot; a CANCELLED one frees it up again
 const blockingStatuses: ReservationStatus[] = ["PENDING", "CONFIRMED"];
 
+const doubleBookingMessage = "Resource is already reserved for this time slot.";
+
 function toDTO(doc: {
   _id: unknown;
   resourceId: unknown;
@@ -73,16 +75,8 @@ export async function createReservation(
     throw new ValidationError("No resource found with id " + resourceId);
   }
 
-  // two time ranges overlap if one starts before the other ends
-  const overlapping = await Reservation.findOne({
-    resourceId: resourceId,
-    status: { $in: blockingStatuses },
-    startTime: { $lt: end },
-    endTime: { $gt: start },
-  });
-
-  if (overlapping) {
-    throw new ConflictError("Resource is already reserved for this time slot.");
+  if (await hasOverlap(resourceId, start, end)) {
+    throw new ConflictError(doubleBookingMessage);
   }
 
   const created = await Reservation.create({
@@ -93,7 +87,33 @@ export async function createReservation(
     status: "PENDING",
   });
 
+  // the check above and the insert are two separate steps, so two requests
+  // arriving together can both pass the check. Re-check after inserting: if
+  // any other active booking overlaps ours, back ours out. Whichever request
+  // checks second always sees the other one, so two can never both succeed.
+  if (await hasOverlap(resourceId, start, end, created._id)) {
+    await Reservation.deleteOne({ _id: created._id });
+    throw new ConflictError(doubleBookingMessage);
+  }
+
   return toDTO(created);
+}
+
+// two time ranges overlap if one starts before the other ends
+async function hasOverlap(
+  resourceId: string,
+  start: Date,
+  end: Date,
+  excludeId?: Types.ObjectId
+): Promise<boolean> {
+  const found = await Reservation.exists({
+    resourceId: resourceId,
+    status: { $in: blockingStatuses },
+    startTime: { $lt: end },
+    endTime: { $gt: start },
+    ...(excludeId ? { _id: { $ne: excludeId } } : {}),
+  });
+  return found !== null;
 }
 
 export async function cancelReservation(id: string): Promise<ReservationDTO> {

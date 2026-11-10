@@ -4,7 +4,10 @@ import {
   cancelReservation,
   getActiveReservationsForUser,
 } from "../services/reservation.service";
-import { Reservation as ReservationDTO } from "../types/reservation";
+import {
+  Reservation as ReservationDTO,
+  ReservationInput,
+} from "../types/reservation";
 import { ErrorResponse } from "../types/common";
 
 // POST /api/v1/reservations
@@ -12,7 +15,10 @@ export async function postReservation(
   req: Request,
   res: Response<ReservationDTO | ErrorResponse>
 ): Promise<void> {
-  const reservation = await createReservation(req.body);
+  // with no JSON body Express leaves req.body undefined; pass an empty object
+  // so the service answers 400 for the missing fields instead of crashing
+  const input: ReservationInput = req.body ?? {};
+  const reservation = await createReservation(input);
   res.status(201).json(reservation);
 }
 
