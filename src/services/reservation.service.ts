@@ -75,7 +75,7 @@ export async function createReservation(
     throw new ValidationError("No resource found with id " + resourceId);
   }
 
-  if (await hasOverlap(resourceId, start, end)) {
+  if (!(await hasOverlap(resourceId, start, end))) {
     throw new ConflictError(doubleBookingMessage);
   }
 
