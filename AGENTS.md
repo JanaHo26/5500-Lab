@@ -5,7 +5,7 @@ If a request conflicts with these rules, ask me first instead of ignoring them.
 ## Tech Stack
 
 - TypeScript only, no `.js` files in `src/`. Backend: Node.js + Express + MongoDB via Mongoose.
-- Allowed packages: `typescript`, `ts-node`, `@types/node`, `express`, `@types/express`, `mongoose`, `dotenv`, `eslint`, `prettier`, and for tests only (devDependencies) `jest`, `ts-jest`, `@types/jest`, `supertest`, `@types/supertest`, `mongodb-memory-server`. Ask before adding any other.
+- Allowed packages: `typescript`, `ts-node`, `@types/node`, `express`, `@types/express`, `mongoose`, `dotenv`, `eslint`, `prettier`, for tests only (devDependencies) `jest`, `ts-jest`, `@types/jest`, `supertest`, `@types/supertest`, `mongodb-memory-server`, and for linting only `typescript-eslint`, `@eslint/js`. Ask before adding any other.
 
 ## Architecture
 
@@ -34,6 +34,13 @@ If a request conflicts with these rules, ask me first instead of ignoring them.
 - `src/app.ts` only listens and connects when run directly, so tests import `app` without side effects. Keep it that way.
 - Don't write only happy-path tests. Every new service function also needs tests for missing/invalid input, exact boundaries (to the millisecond for times), not-found ids, and concurrent calls where data can conflict.
 - A failing test that exposes a real bug means fixing the code, not loosening the test.
+
+## CI (.github/workflows/ci.yml)
+
+- Every push to `main` and every PR into `main` runs `npm ci`, `npm run lint` (config in `eslint.config.mjs`) and `npm test`. Keep both green before merging.
+- If Jest fails on a PR, the `auto-fix` job runs `scripts/auto-heal.ts`: it sends the failure log, the PR's `src/` diff and the changed source files to an AI model, applies the patch to non-test `src/` files only, re-runs Jest, and opens a PR from `fix/auto-heal-<run id>` into the broken branch.
+- The model key is the `AI_API_KEY` repo secret (free Google Gemini key by default; `AI_MODEL` / `AI_ENDPOINT` repo variables switch providers). Never put keys in code.
+- Auto-heal PRs are never merged unreviewed: check the diff fixes the root cause, that no test was changed or weakened, and record that review in the PR's Audit Log section.
 
 ## Frontend (client/)
 

@@ -19,7 +19,6 @@ export function errorHandler(
   }
 
   const message: string = err instanceof Error ? err.message : "Unknown error";
-  // eslint-disable-next-line no-console
   console.error(message);
   res
     .status(500)

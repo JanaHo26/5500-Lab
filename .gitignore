@@ -18,3 +18,7 @@ npm-debug.log*
 
 # Test coverage reports
 coverage
+
+# CI auto-heal output
+test-results.log
+fix-summary.md
